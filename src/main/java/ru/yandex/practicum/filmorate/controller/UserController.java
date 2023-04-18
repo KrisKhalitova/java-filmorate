@@ -17,7 +17,7 @@ import java.util.Map;
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     private static int userId = 1;
-    private final static String EMAIL_CH = "@";
+//    private final static String EMAIL_CH = "@";
 
     @PostMapping
     public User addNewUser(@Valid @RequestBody User user) {

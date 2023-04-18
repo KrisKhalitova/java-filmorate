@@ -18,8 +18,8 @@ import java.util.Map;
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     private static int filmId = 1;
-    private final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
-    private final static int MAX_SYMBOLS = 200;
+    private final static LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+//    private final static int MAX_SYMBOLS = 200;
 
     @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) {
