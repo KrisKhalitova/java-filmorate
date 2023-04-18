@@ -18,7 +18,7 @@ import java.util.Map;
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     private static int filmId = 1;
-    private final static LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private final LocalDate minReleaseDate = LocalDate.of(1895, 12, 28);
 //    private final static int MAX_SYMBOLS = 200;
 
     @PostMapping
@@ -55,9 +55,9 @@ public class FilmController {
     }
 
     public void validateFilm(Film film) {
-        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            log.warn("The release date of the movie should be after " + MIN_RELEASE_DATE + ".");
-            throw new ValidationException("The release date of the movie should be after " + MIN_RELEASE_DATE + ".");
+        if (film.getReleaseDate().isBefore(minReleaseDate)) {
+            log.warn("The release date of the movie should be after " + minReleaseDate + ".");
+            throw new ValidationException("The release date of the movie should be after " + minReleaseDate + ".");
         }
 //        if (film.getName().isBlank()) {
 //          log.warn("The film title shouldn't be empty.");
