@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controllerTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -125,7 +126,7 @@ class UserControllerTest {
 
     @Test
     void shouldUpdateNonExistedUser() {
-        assertThrows(ValidationException.class, () -> {
+        assertThrows(NotFoundException.class, () -> {
             userController.updateUser(user);
         });
     }

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controllerTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -111,7 +112,7 @@ class FilmControllerTest {
 
     @Test
     void shouldUpdateNonExistedFilm() {
-        assertThrows(ValidationException.class, () -> {
+        assertThrows(NotFoundException.class, () -> {
             filmController.updateFilm(film);
         });
     }
