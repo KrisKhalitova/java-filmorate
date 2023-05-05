@@ -2,10 +2,11 @@ package ru.yandex.practicum.filmorate.controllerTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -19,14 +20,14 @@ class UserControllerTest {
 
     private User user;
     private User user2;
-    private UserController userController;
+    private UserService userService;
     private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private Validator validator = factory.getValidator();
 
 
     @BeforeEach
     public void beforeEach() {
-        userController = new UserController();
+        userService = new UserService(new InMemoryUserStorage());
         user = new User("mail@yandex.ru", "Login", "UserName",
                 LocalDate.of(1995, 10, 05));
         user2 = new User("secondmail@mail.ru", "SecondLogin", "SecondUserName",
@@ -35,8 +36,8 @@ class UserControllerTest {
 
     @Test
     void shouldAddNewUser() {
-        userController.addNewUser(user);
-        List<User> actual = userController.getAllUsers();
+        userService.addNewUser(user);
+        List<User> actual = userService.getAllUsers();
 
         assertEquals(1, actual.size());
         assertEquals(user.getId(), actual.get(0).getId());
@@ -48,7 +49,7 @@ class UserControllerTest {
 
     @Test
     void shouldAddNewUserWithIncorrectEmail() {
-        userController.addNewUser(user);
+        userService.addNewUser(user);
         user.setEmail("mail.mail.ru");
 
         assertEquals(1, validator.validate(user).size());
@@ -57,7 +58,7 @@ class UserControllerTest {
     @Test
     void shouldAddNewUserWithIncorrectName() {
         user.setName(" ");
-        userController.addNewUser(user);
+        userService.addNewUser(user);
 
         assertEquals(user.getLogin(), user.getName());
     }
@@ -65,14 +66,14 @@ class UserControllerTest {
     @Test
     void shouldAddNewUserWithNullName() {
         user.setName(null);
-        userController.addNewUser(user);
+        userService.addNewUser(user);
 
         assertEquals(user.getLogin(), user.getName());
     }
 
     @Test
     void shouldAddNewUserWithIncorrectLogin() {
-        userController.addNewUser(user);
+        userService.addNewUser(user);
         user.setLogin(" ");
 
         assertEquals(1, validator.validate(user).size());
@@ -80,17 +81,17 @@ class UserControllerTest {
 
     @Test
     void shouldAddNewUserWithIncorrectLoginWithWhitespace() {
-        userController.addNewUser(user);
+        userService.addNewUser(user);
         user.setLogin("Login login");
 
         assertThrows(ValidationException.class, () -> {
-            userController.validateUser(user);
+            InMemoryUserStorage.validateUser(user);
         });
     }
 
     @Test
     void shouldAddNewUserWithIncorrectBirthday() {
-        userController.addNewUser(user);
+        userService.addNewUser(user);
         user.setBirthday(LocalDate.of(2024, 10, 8));
 
         assertEquals(1, validator.validate(user).size());
@@ -98,9 +99,9 @@ class UserControllerTest {
 
     @Test
     void shouldGetAllUsers() {
-        userController.addNewUser(user);
-        userController.addNewUser(user2);
-        List<User> actual = userController.getAllUsers();
+        userService.addNewUser(user);
+        userService.addNewUser(user2);
+        List<User> actual = userService.getAllUsers();
 
         assertEquals(2, actual.size());
         assertTrue(actual.contains(user));
@@ -109,14 +110,14 @@ class UserControllerTest {
 
     @Test
     void shouldUpdateUser() {
-        userController.addNewUser(user);
+        userService.addNewUser(user);
         user.setName("NewName");
         user.setEmail("newemail@google.com");
         user.setLogin("NewLogin");
         user.setBirthday(LocalDate.of(1980, 6, 14));
-        userController.updateUser(user);
+        userService.updateUser(user);
 
-        List<User> actual = userController.getAllUsers();
+        List<User> actual = userService.getAllUsers();
         assertEquals(user.getId(), actual.get(0).getId());
         assertEquals(user.getEmail(), actual.get(0).getEmail());
         assertEquals(user.getLogin(), actual.get(0).getLogin());
@@ -127,7 +128,7 @@ class UserControllerTest {
     @Test
     void shouldUpdateNonExistedUser() {
         assertThrows(NotFoundException.class, () -> {
-            userController.updateUser(user);
+            userService.updateUser(user);
         });
     }
 }

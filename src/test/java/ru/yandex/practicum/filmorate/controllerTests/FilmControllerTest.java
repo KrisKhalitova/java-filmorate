@@ -2,10 +2,12 @@ package ru.yandex.practicum.filmorate.controllerTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -19,13 +21,13 @@ class FilmControllerTest {
 
     private Film film;
     private Film film2;
-    private FilmController filmController;
+    private FilmService filmService;
     private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private Validator validator = factory.getValidator();
 
     @BeforeEach
     public void beforeEach() {
-        filmController = new FilmController();
+        filmService = new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage());
         film = new Film("Film", "Description of the first film",
                 LocalDate.of(1975, 3, 1), 100);
         film2 = new Film("Second Film", "Description of the second film",
@@ -34,8 +36,8 @@ class FilmControllerTest {
 
     @Test
     void shouldAddNewFilm() {
-        filmController.addNewFilm(film);
-        List<Film> actual = filmController.getAllFilms();
+        filmService.addNewFilm(film);
+        List<Film> actual = filmService.getAllFilms();
 
         assertEquals(1, actual.size());
         assertEquals(film.getId(), actual.get(0).getId());
@@ -47,7 +49,7 @@ class FilmControllerTest {
 
     @Test
     void shouldAddNewFilmWithIncorrectName() {
-        filmController.addNewFilm(film);
+        filmService.addNewFilm(film);
         film.setName("");
 
         assertEquals(1, validator.validate(film).size());
@@ -55,7 +57,7 @@ class FilmControllerTest {
 
     @Test
     void shouldAddNewFilmWithIncorrectDescription() {
-        filmController.addNewFilm(film);
+        filmService.addNewFilm(film);
         String newDescr = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".repeat(3);
         film.setDescription(newDescr);
 
@@ -64,17 +66,17 @@ class FilmControllerTest {
 
     @Test
     void shouldAddNewFilmWithIncorrectReleaseDate() {
-        filmController.addNewFilm(film);
+        filmService.addNewFilm(film);
         film.setReleaseDate(LocalDate.of(1700, 10, 8));
 
         assertThrows(ValidationException.class, () -> {
-            filmController.validateFilm(film);
+            InMemoryFilmStorage.validateFilm(film);
         });
     }
 
     @Test
     void shouldAddNewFilmWithIncorrectDuration() {
-        filmController.addNewFilm(film);
+        filmService.addNewFilm(film);
         film.setDuration(-100);
 
         assertEquals(1, validator.validate(film).size());
@@ -82,9 +84,9 @@ class FilmControllerTest {
 
     @Test
     void shouldGetAllFilms() {
-        filmController.addNewFilm(film);
-        filmController.addNewFilm(film2);
-        List<Film> actual = filmController.getAllFilms();
+        filmService.addNewFilm(film);
+        filmService.addNewFilm(film2);
+        List<Film> actual = filmService.getAllFilms();
 
         assertEquals(2, actual.size());
         assertTrue(actual.contains(film));
@@ -93,14 +95,14 @@ class FilmControllerTest {
 
     @Test
     void shouldUpdateFilm() {
-        filmController.addNewFilm(film);
+        filmService.addNewFilm(film);
         film.setName("New Name of The film");
         film.setDescription("New Description");
         film.setReleaseDate(LocalDate.of(2014, 6, 7));
         film.setDuration(140);
 
-        filmController.updateFilm(film);
-        List<Film> actual = filmController.getAllFilms();
+        filmService.updateFilm(film);
+        List<Film> actual = filmService.getAllFilms();
 
         assertEquals(1, actual.size());
         assertEquals(film.getId(), actual.get(0).getId());
@@ -113,7 +115,7 @@ class FilmControllerTest {
     @Test
     void shouldUpdateNonExistedFilm() {
         assertThrows(NotFoundException.class, () -> {
-            filmController.updateFilm(film);
+            filmService.updateFilm(film);
         });
     }
 }

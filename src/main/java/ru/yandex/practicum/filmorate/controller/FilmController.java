@@ -1,61 +1,53 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
+@RequiredArgsConstructor
 public class FilmController {
-    private final Map<Integer, Film> films = new HashMap<>();
-    private int filmId = 1;
-    private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private final FilmService filmService;
 
     @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) {
-        if (films.containsValue(film)) {
-            log.warn("This film has been already created.");
-            throw new ValidationException("This film has been already created.");
-        }
-        validateFilm(film);
-        film.setId(filmId++);
-        films.put(film.getId(), film);
-        log.info("A new film {} is added.", film);
-        return films.get(film.getId());
+        return filmService.addNewFilm(film);
     }
 
     @GetMapping
     public List<Film> getAllFilms() {
-        log.info("Request of getting all films is received.");
-        return new ArrayList<>(films.values());
+        return filmService.getAllFilms();
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        if (films.get(film.getId()) == null) {
-            log.warn("It's not possible to update non-existent film");
-            throw new NotFoundException("It's not possible to update non-existent film");
-        }
-        validateFilm(film);
-        films.put(film.getId(), film);
-        log.info("The film {} is updated.", film);
-        return films.get(film.getId());
+        return filmService.updateFilm(film);
     }
 
-    public void validateFilm(Film film) {
-        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            log.warn("The release date of the movie should be after " + MIN_RELEASE_DATE + ".");
-            throw new ValidationException("The release date of the movie should be after " + MIN_RELEASE_DATE + ".");
-        }
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable long id) {
+        return filmService.getFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getTopFilms(@RequestParam(value = "count", defaultValue = "10") long count) {
+        return filmService.getTenTopFilms(count);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.deleteLike(id, userId);
     }
 }
