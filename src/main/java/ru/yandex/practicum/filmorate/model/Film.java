@@ -10,7 +10,6 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -24,7 +23,7 @@ public class Film {
     private String description;
     @NotNull
     private LocalDate releaseDate; //yyyy-MM-dd.
-    @PositiveOrZero(message = "The description of the film should be more than 0 minutes.")
+    @PositiveOrZero(message = "The duration of the film should be more than 0 minutes.")
     private Integer duration;
     private Set<Long> likes;
 
@@ -42,19 +41,5 @@ public class Film {
 
     public void removeLike(long userId) {
         likes.remove(userId);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Film)) return false;
-        Film film = (Film) o;
-        return Objects.equals(name, film.name) && Objects.equals(description, film.description) &&
-                Objects.equals(releaseDate, film.releaseDate) && Objects.equals(duration, film.duration);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, releaseDate, duration);
     }
 }

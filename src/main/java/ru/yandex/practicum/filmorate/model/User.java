@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -41,23 +40,5 @@ public class User {
 
     public void deleteFriend(long friendId) {
         friends.remove(friendId);
-    }
-
-    public Set<Long> getFriends() {
-        return new HashSet<>(friends);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id == user.id && Objects.equals(email, user.email) && Objects.equals(login, user.login) &&
-                Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email, login, name, birthday);
     }
 }

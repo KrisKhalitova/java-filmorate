@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Validation;
@@ -27,7 +28,7 @@ class UserControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        userService = new UserService(new InMemoryUserStorage());
+        userService = new UserService(new InMemoryFilmStorage(), new InMemoryUserStorage());
         user = new User("mail@yandex.ru", "Login", "UserName",
                 LocalDate.of(1995, 10, 05));
         user2 = new User("secondmail@mail.ru", "SecondLogin", "SecondUserName",

@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -10,36 +10,26 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+    private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    public UserService(UserStorage userStorage) {
+    public UserService(FilmStorage filmStorage, UserStorage userStorage) {
+        this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
 
-    public User addNewFriend(long userId, long friendId) {
-        if (userStorage.getUserById(userId) == null) {
-            throw new NotFoundException("The user doesn't exist");
-        } else if (userStorage.getUserById(friendId) == null) {
-            throw new NotFoundException("The user(friend) doesn't exist.");
-        }
+    public void addNewFriend(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         user.addNewFriend(friendId);
         friend.addNewFriend(userId);
-        return user;
     }
 
-    public User deleteFromFriends(long userId, long friendId) {
-        if (userStorage.getUserById(userId) == null) {
-            throw new NotFoundException("The user doesn't exist");
-        } else if (userStorage.getUserById(friendId) == null) {
-            throw new NotFoundException("The user(friend) doesn't exist.");
-        }
+    public void deleteFromFriends(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         user.deleteFriend(friendId);
         friend.deleteFriend(userId);
-        return user;
     }
 
     public User getUserById(long userId) {
