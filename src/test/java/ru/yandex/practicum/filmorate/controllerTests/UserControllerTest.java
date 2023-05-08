@@ -28,7 +28,7 @@ class UserControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        userService = new UserService(new InMemoryFilmStorage(), new InMemoryUserStorage());
+        userService = new UserService(new InMemoryUserStorage());
         user = new User("mail@yandex.ru", "Login", "UserName",
                 LocalDate.of(1995, 10, 05));
         user2 = new User("secondmail@mail.ru", "SecondLogin", "SecondUserName",
