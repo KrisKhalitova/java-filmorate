@@ -228,11 +228,11 @@ jobs:
           chmod a+x ./tests/.github/workflows/run.sh
           ./tests/.github/workflows/run.sh
           
-          - name: Wait 
-          run: |
+      - name: Wait
+        run: |
           sleep 60  
           
-          - name: Upload log artifact
+      - name: Upload log artifact
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
