@@ -203,7 +203,7 @@ jobs:
           sleep 60  
           
       - name: Upload log artifact
-        if: ${{ failure() }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: temp_filmorate_log
@@ -211,7 +211,7 @@ jobs:
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
-        if: ${{ failure() }}
+        if: ${{ always() }}
         with:
           name: temp_postman_tests_report
           path: reports
