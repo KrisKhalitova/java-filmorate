@@ -236,14 +236,14 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
-          name: filmorate_log
+          name: temp_filmorate_log
           path: ./*.log
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
-          name: postman_tests_report
+          name: temp_postman_tests_report
           path: reports
 
 
