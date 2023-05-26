@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -34,11 +35,16 @@ public class User {
         this.friends = new HashSet<>();
     }
 
-    public void addNewFriend(long friendId) {
-        friends.add(friendId);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return id == user.id && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday) && Objects.equals(friends, user.friends);
     }
 
-    public void deleteFriend(long friendId) {
-        friends.remove(friendId);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, login, name, birthday, friends);
     }
 }

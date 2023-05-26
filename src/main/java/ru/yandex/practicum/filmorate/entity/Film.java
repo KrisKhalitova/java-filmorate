@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,13 +10,15 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
 @ToString
 public class Film {
-    private long id;
+    private Long id;
     @NotBlank(message = "The film title shouldn't be empty.")
     private String name;
     @Size(min = 1, max = 200, message = "The film description length should be less than 200 characters.")
@@ -25,21 +27,27 @@ public class Film {
     private LocalDate releaseDate; //yyyy-MM-dd.
     @PositiveOrZero(message = "The duration of the film should be more than 0 minutes.")
     private Integer duration;
-    private Set<Long> likes;
+    private Set<Long> likes = new HashSet<>();
+    private Mpa mpa;
+    private Set<Genre> genres = new LinkedHashSet<>();
 
     public Film(String name, String description, LocalDate releaseDate, Integer duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.likes = new HashSet<>();
     }
 
-    public void addLike(long userId) {
-        likes.add(userId);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Film)) return false;
+        Film film = (Film) o;
+        return Objects.equals(id, film.id) && Objects.equals(name, film.name) && Objects.equals(description, film.description) && Objects.equals(releaseDate, film.releaseDate) && Objects.equals(duration, film.duration);
     }
 
-    public void removeLike(long userId) {
-        likes.remove(userId);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, releaseDate, duration);
     }
 }
