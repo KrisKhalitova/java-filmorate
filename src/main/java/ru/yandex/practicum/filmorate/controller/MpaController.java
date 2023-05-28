@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.entity.Mpa;
 import ru.yandex.practicum.filmorate.service.interfaces.MpaService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -19,7 +20,7 @@ public class MpaController {
     private final MpaService mpaRatingService;
 
     @GetMapping("/{ratingId}")
-    public Mpa getMpaRatingById(@PathVariable long ratingId) {
+    public Mpa getMpaRatingById(@Valid @PathVariable long ratingId) {
         return mpaRatingService.getMpaRatingById(ratingId);
     }
 

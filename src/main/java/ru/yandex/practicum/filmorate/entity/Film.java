@@ -6,7 +6,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -25,9 +25,10 @@ public class Film {
     private String description;
     @NotNull
     private LocalDate releaseDate; //yyyy-MM-dd.
-    @PositiveOrZero(message = "The duration of the film should be more than 0 minutes.")
+    @Positive(message = "The duration of the film should be more than 0 minutes.")
     private Integer duration;
     private Set<Long> likes = new HashSet<>();
+    @NotNull
     private Mpa mpa;
     private Set<Genre> genres = new LinkedHashSet<>();
 

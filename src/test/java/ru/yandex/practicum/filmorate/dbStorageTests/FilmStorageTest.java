@@ -11,8 +11,10 @@ import ru.yandex.practicum.filmorate.entity.Film;
 import ru.yandex.practicum.filmorate.entity.Genre;
 import ru.yandex.practicum.filmorate.entity.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ public class FilmStorageTest {
 
     private final FilmDbStorage filmDbStorage;
     private final JdbcTemplate jdbcTemplate;
+    private final GenreDbStorage genreDbStorage;
     Film film;
     Film film2;
     Film film3;
@@ -102,9 +105,10 @@ public class FilmStorageTest {
         Set<Genre> filmGenres = Set.of(new Genre(1, "Комедия"), new Genre(2, "Драма"));
         film.setGenres(filmGenres);
         film = filmDbStorage.addNewFilm(film);
-        filmDbStorage.setFilmGenre(film);
 
-        Film gettingFilm = filmDbStorage.loadFilmGenre(film);
+        List<Film> films = new ArrayList<>();
+        films.add(film);
+        Film gettingFilm = genreDbStorage.loadFilmGenres(films).get(0);
         Set<Genre> gettingGenres = gettingFilm.getGenres();
 
         assertEquals(gettingGenres.size(), filmGenres.size());
@@ -117,16 +121,14 @@ public class FilmStorageTest {
         Set<Genre> filmGenres1 = Set.of(new Genre(1, "Комедия"), new Genre(2, "Драма"));
         film.setGenres(filmGenres1);
         film = filmDbStorage.addNewFilm(film);
-        filmDbStorage.setFilmGenre(film);
 
         Set<Genre> filmGenres2 = Set.of(new Genre(4, "Триллер"), new Genre(6, "Боевик"));
         film2 = filmDbStorage.addNewFilm(film2);
         film2.setGenres(filmGenres2);
-        filmDbStorage.setFilmGenre(film2);
 
 
         List<Film> films = List.of(film, film2);
-        films = filmDbStorage.loadFilmGenres(films);
+        films = genreDbStorage.loadFilmGenres(films);
 
         Set<Genre> gottenGenres1 = films.get(0).getGenres();
         assertEquals(gottenGenres1.size(), filmGenres1.size());
@@ -140,31 +142,18 @@ public class FilmStorageTest {
     }
 
     @Test
-    void deleteFilmGenresTest() {
-        Set<Genre> filmGenres1 = Set.of(new Genre(1, "Комедия"), new Genre(2, "Драма"));
-        film.setGenres(filmGenres1);
-        film = filmDbStorage.addNewFilm(film);
-        filmDbStorage.setFilmGenre(film);
-        filmDbStorage.deleteFilmGenre(film.getId());
-
-        Film gettingFilm = filmDbStorage.loadFilmGenre(film);
-        Set<Genre> gettingGenres = gettingFilm.getGenres();
-
-        assertTrue(gettingGenres.isEmpty());
-    }
-
-    @Test
     void updateGenresTest() {
         Set<Genre> filmGenres1 = Set.of(new Genre(1, "Комедия"), new Genre(2, "Драма"));
         film.setGenres(filmGenres1);
         film = filmDbStorage.addNewFilm(film);
-        filmDbStorage.setFilmGenre(film);
 
         Set<Genre> filmGenres2 = Set.of(new Genre(4, "Триллер"), new Genre(6, "Боевик"));
         film.setGenres(filmGenres2);
         filmDbStorage.updateFilmGenre(film);
 
-        Film gettingFilm = filmDbStorage.loadFilmGenre(film);
+        List<Film> films = new ArrayList<>();
+        films.add(film);
+        Film gettingFilm = genreDbStorage.loadFilmGenres(films).get(0);
         Set<Genre> gottenGenres = gettingFilm.getGenres();
 
         assertEquals(gottenGenres.size(), filmGenres2.size());

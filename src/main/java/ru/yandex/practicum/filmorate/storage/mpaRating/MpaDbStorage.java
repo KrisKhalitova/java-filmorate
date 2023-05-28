@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.mpaRating;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Primary
+@Slf4j
 public class MpaDbStorage implements MpaStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -25,10 +26,12 @@ public class MpaDbStorage implements MpaStorage {
         String sql = "SELECT * " +
                 "FROM rating_mpa " +
                 "WHERE rating_id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, mapMpaRating, ratingId);
-        } catch (EmptyResultDataAccessException e) {
+        int count = jdbcTemplate.query(sql, mapMpaRating, ratingId).size();
+        if (count != 1) {
+            log.warn("Rating wasn't found");
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Rating wasn't found");
+        } else {
+            return jdbcTemplate.queryForObject(sql, mapMpaRating, ratingId);
         }
     }
 

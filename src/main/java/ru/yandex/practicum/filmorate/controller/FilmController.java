@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.entity.Film;
 import ru.yandex.practicum.filmorate.service.interfaces.FilmService;
-import ru.yandex.practicum.filmorate.service.interfaces.LikesService;
+import ru.yandex.practicum.filmorate.service.interfaces.LikeService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
-    private final LikesService filmLikeService;
+    private final LikeService filmLikeService;
 
     @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) {
@@ -40,7 +40,7 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam(value = "count", defaultValue = "10") long count) {
-        return filmLikeService.getTheMostPopularFilms(count);
+        return filmService.getTheMostPopularFilms(count);
     }
 
     @PutMapping("/{id}/like/{userId}")

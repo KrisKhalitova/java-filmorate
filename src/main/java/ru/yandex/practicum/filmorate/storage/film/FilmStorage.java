@@ -14,15 +14,5 @@ public interface FilmStorage {
 
     Film getFilmById(long idFilm);
 
-    Film loadFilmGenre(Film film);
-
-    List<Film> loadFilmGenres(List<Film> films);
-
-    void deleteFilmGenre(long id);
-
-    void updateFilmGenre(Film film);
-
-    void setFilmGenre(Film film);
-
-    void deleteFilm(long id);
+    List<Film> getTheMostPopularFilms(long count);
 }

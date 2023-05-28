@@ -22,8 +22,7 @@ CREATE TABLE IF NOT EXISTS films (
   description VARCHAR(200) NOT NULL,
   release_date DATE NOT NULL,
   duration INTEGER NOT NULL,
-  rating_id INTEGER REFERENCES rating_mpa(rating_id),
-  CHECK(duration > 0)
+  rating_id INTEGER REFERENCES rating_mpa(rating_id)
 );
 
 CREATE TABLE IF NOT EXISTS film_genre (
@@ -37,7 +36,6 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(64) NOT NULL,
   login VARCHAR(64) NOT NULL,
   birthday DATE
-  CHECK(birthday <= CAST(now() AS DATE))
 );
 
 CREATE TABLE IF NOT EXISTS friendship (

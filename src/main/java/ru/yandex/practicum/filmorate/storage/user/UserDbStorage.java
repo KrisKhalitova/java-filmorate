@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -71,10 +70,12 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT * " +
                 "FROM users " +
                 "WHERE id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, userMapper, userId);
-        } catch (EmptyResultDataAccessException e) {
+        int count = jdbcTemplate.query(sql, userMapper, userId).size();
+        if (count != 1) {
+            log.warn("User wasn't found");
             throw new NotFoundException(HttpStatus.NOT_FOUND, "User wasn't found");
+        } else {
+            return jdbcTemplate.queryForObject(sql, userMapper, userId);
         }
     }
 

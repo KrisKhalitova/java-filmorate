@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.entity.Film;
 import ru.yandex.practicum.filmorate.service.interfaces.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
 
 import java.util.List;
 
@@ -14,16 +13,15 @@ import java.util.List;
 public class FilmServiceImpl implements FilmService {
 
     private final FilmStorage filmStorage;
-    private final LikesStorage likesStorage;
 
     @Override
     public Film getFilmById(long idFilm) {
-        return filmStorage.loadFilmGenre(filmStorage.getFilmById(idFilm));
+        return filmStorage.getFilmById(idFilm);
     }
 
     @Override
     public List<Film> getTheMostPopularFilms(long count) {
-        return likesStorage.getTheMostPopularFilms(count);
+        return filmStorage.getTheMostPopularFilms(count);
     }
 
     @Override
@@ -33,7 +31,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getAllFilms() {
-        return filmStorage.loadFilmGenres(filmStorage.getAllFilms());
+        return filmStorage.getAllFilms();
     }
 
     @Override
