@@ -87,15 +87,14 @@ public class FilmDbStorage implements FilmStorage {
                 "JOIN rating_mpa ON rating_mpa.rating_id = films.rating_id " +
                 "WHERE films.id = ?";
         int count = jdbcTemplate.query(sql, filmMapper, idFilm).size();
-        if (count != 0) {
-            List<Film> films = genreDbStorage.loadFilmGenres(jdbcTemplate.query(sql, filmMapper, idFilm));
-            film = films.get(0);
-            setFilmGenre(film);
-            return film;
-        } else {
+        if (count != 1) {
             log.warn("Film wasn't found");
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Film wasn't found");
         }
+        List<Film> films = genreDbStorage.loadFilmGenres(jdbcTemplate.query(sql, filmMapper, idFilm));
+        film = films.get(0);
+        setFilmGenre(film);
+        return film;
     }
 
     @Override

@@ -70,13 +70,12 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT * " +
                 "FROM users " +
                 "WHERE id = ?";
-        int count = jdbcTemplate.query(sql, userMapper, userId).size();
-        if (count != 1) {
+        List<User> user = jdbcTemplate.query(sql, userMapper, userId);
+        if (user.size() != 1) {
             log.warn("User wasn't found");
             throw new NotFoundException(HttpStatus.NOT_FOUND, "User wasn't found");
-        } else {
-            return jdbcTemplate.queryForObject(sql, userMapper, userId);
         }
+        return user.get(0);
     }
 
     private void validateUser(User user) {

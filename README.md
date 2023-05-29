@@ -38,7 +38,7 @@
 - дата рождения не может быть в будущем.
 
 Ниже приведена схема проекта и связи между таблицами. 
-![schema.png](..%2F..%2FDownloads%2Fschema.png)
+![schema.png](src%2Fmain%2Fresources%2Fschema.png)
 https://dbdiagram.io/d/64638443dca9fb07c42e1f4c
 
 Описание:

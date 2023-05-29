@@ -18,25 +18,28 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Override
     public void addNewFriend(long userId, long friendId) {
-        if (userStorage.getUserById(userId) != null && userStorage.getUserById(friendId) != null) {
-            friendshipStorage.addNewFriend(userId, friendId);
-        }
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
+        friendshipStorage.addNewFriend(userId, friendId);
     }
 
     @Override
     public void deleteFromFriends(long userId, long friendId) {
-        if (userStorage.getUserById(userId) != null && userStorage.getUserById(friendId) != null) {
-            friendshipStorage.deleteFromFriends(userId, friendId);
-        }
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
+        friendshipStorage.deleteFromFriends(userId, friendId);
     }
 
     @Override
     public List<User> getAllFriends(long userId) {
+        userStorage.getUserById(userId);
         return friendshipStorage.getAllFriends(userId);
     }
 
     @Override
     public List<User> getCommonFriends(long userId, long friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
         return friendshipStorage.getCommonFriends(userId, friendId);
     }
 }

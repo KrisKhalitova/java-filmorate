@@ -26,13 +26,12 @@ public class MpaDbStorage implements MpaStorage {
         String sql = "SELECT * " +
                 "FROM rating_mpa " +
                 "WHERE rating_id = ?";
-        int count = jdbcTemplate.query(sql, mapMpaRating, ratingId).size();
-        if (count != 1) {
+        List<Mpa> rating = jdbcTemplate.query(sql, mapMpaRating, ratingId);
+        if (rating.size() != 1) {
             log.warn("Rating wasn't found");
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Rating wasn't found");
-        } else {
-            return jdbcTemplate.queryForObject(sql, mapMpaRating, ratingId);
         }
+        return rating.get(0);
     }
 
     @Override
