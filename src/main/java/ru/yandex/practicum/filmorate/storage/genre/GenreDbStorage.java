@@ -33,12 +33,12 @@ public class GenreDbStorage implements GenreStorage {
         String sql = "SELECT * " +
                 "FROM genres " +
                 "WHERE genres_id = ?";
-        int count = jdbcTemplate.query(sql, genreMapper, genreId).size();
-        if (count == 0) {
+        List<Genre> genres = jdbcTemplate.query(sql, genreMapper, genreId);
+        if (genres.size() != 1) {
             log.warn("Genre wasn't found");
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Genre wasn't found");
         }
-        return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
+        return genres.get(0);
     }
 
     @Override
