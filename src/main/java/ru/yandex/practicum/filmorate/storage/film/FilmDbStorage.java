@@ -90,8 +90,7 @@ public class FilmDbStorage implements FilmStorage {
             log.warn("Film wasn't found");
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Film wasn't found");
         }
-        List<Film> genres = genreDbStorage.loadFilmGenres(films);
-        setFilmGenre(genres.get(0));
+        genreDbStorage.loadFilmGenres(films);
         return films.get(0);
     }
 
